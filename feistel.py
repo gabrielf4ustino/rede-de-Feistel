@@ -89,10 +89,11 @@ def main():
                 break
             initialized = True
         elif initialized and (input_line[0] == 'C' or input_line[0] == 'D'):
+            key = generated_key
             if input_line[0] == 'D':
-                generated_key = generated_key[::-1]
+                key = generated_key[::-1]
             input_line = list(map(int, input_line[1:]))
-            output = feistel(input_line, rounds, generated_key)
+            output = feistel(input_line, rounds, key)
             print('C ' + ' '.join(str(s) for s in output))
 
 
