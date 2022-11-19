@@ -15,11 +15,10 @@ def generate_pa_pb():
 
 def rotate(array, num):
     i = len(array)
-    array[:] = array[i - num:i] + array[0:i - num]
-    return array
+    return array[i - num:i] + array[0:i - num]
 
 
-def rc4(key, cont):
+def rc4(key_rc4, cont):
     final_key = []
     pa, pb = generate_pa_pb()
     for i in range(cont):
@@ -28,10 +27,10 @@ def rc4(key, cont):
         else:
             s = list(pb)
         if i % 2 == 0 and i != 0:
-            key = rotate(key, 1)
+            key_rc4 = rotate(key_rc4, 1)
         t = []
         for i in range(256):
-            t.append(key[i % len(key)])
+            t.append(key_rc4[i % len(key_rc4)])
         j = 0
         for i in range(256):
             j = (j + s[i] + t[i]) % 256
@@ -69,11 +68,41 @@ def feistel(block, cont, key_rc4):
     return right + left
 
 
-bloco = [201, 54, 157, 112, 249, 234, 97, 6, 63, 122, 201, 54, 157, 112, 249, 234, 113, 88, 255, 244, 139, 242, 131,
-         138, 99, 150, 113, 88, 255, 244, 139, 242]
-# [193, 78, 45, 66, 115, 14, 211, 74, 79, 242, 193, 78, 45, 66, 115, 14, 179, 162, 213, 4, 43, 70, 203, 36, 9, 124, 179, 162, 213, 4, 43, 70]
+def main():
+    initialized = False
+    while True:
+        input_line = input()
+        input_line = input_line.split()
+        if len(input_line) == 0:
+            break
+        if input_line[0] == 'I':
+            rounds = int(input_line[1])
+            input_line = list(map(int, input_line[2:]))
+            if 8 <= input_line[0] <= 32:
+                if len(input_line[1:]) == input_line[0]:
+                    generated_key = rc4(input_line[1:], rounds)
+                else:
+                    print("ERRO! A quantidade de elementos da chave não corresponde com o parâmentro passado.")
+                    break
+            else:
+                print("ERRO!")
+                break
+            initialized = True
+        elif initialized and (input_line[0] == 'C' or input_line[0] == 'D'):
+            if input_line[0] == 'D':
+                generated_key = generated_key[::-1]
+            input_line = list(map(int, input_line[1:]))
+            output = feistel(input_line, rounds, generated_key)
+            print('C ' + ' '.join(str(s) for s in output))
 
-key1 = [1, 2, 3, 4, 5, 6, 7, 8]
-chave = rc4(key1, 8)
-feistel = feistel(bloco, 8, chave[::-1])
-print(feistel)
+
+if __name__ == "__main__":
+    main()
+
+# bloco = 201 54 157 112 249 234 97 6 63 122 201 54 157 112 249 234 113 88 255 244 139 242 131 138 99 150 113 88 255 244 139 242
+# # [193 78 45 66 115 14 211 74 79 242 193 78 45 66 115 14 179 162 213 4 43 70 203 36 9 124 179 162 213 4 43 70]
+#
+# key1 = [1 2, 3, 4, 5, 6, 7, 8]
+# chave = rc4(key1, 8)
+# feistel = feistel(bloco, 8, chave[::-1])
+# print(feistel)
