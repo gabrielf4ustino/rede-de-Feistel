@@ -18,6 +18,7 @@ def rotate(array, num):
     return array[i - num:i] + array[0:i - num]
 
 
+# Generate key with rc4 algorithm
 def rc4(key_rc4, cont):
     final_key = []
     pa, pb = generate_pa_pb()
@@ -42,6 +43,7 @@ def rc4(key_rc4, cont):
     return final_key
 
 
+# Does mono alpha replacement on two arrays
 def sub_mono(one, two):
     to_return = list(one)
     for i in range(len(one)):
@@ -50,6 +52,7 @@ def sub_mono(one, two):
     return to_return
 
 
+# Xor two arrays bitwise
 def x_or(one, two):
     to_return = []
     for i in range(len(one)):
@@ -57,6 +60,7 @@ def x_or(one, two):
     return to_return
 
 
+# Run the feistel algorithm
 def feistel(block, cont, key_rc4):
     i = int(len(block) / 2)
     left = block[0:i]
@@ -68,6 +72,7 @@ def feistel(block, cont, key_rc4):
     return right + left
 
 
+# Read inputs and exec the functions
 def main():
     initialized = False
     while True:
@@ -99,11 +104,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# bloco = 201 54 157 112 249 234 97 6 63 122 201 54 157 112 249 234 113 88 255 244 139 242 131 138 99 150 113 88 255 244 139 242
-# # [193 78 45 66 115 14 211 74 79 242 193 78 45 66 115 14 179 162 213 4 43 70 203 36 9 124 179 162 213 4 43 70]
-#
-# key1 = [1 2, 3, 4, 5, 6, 7, 8]
-# chave = rc4(key1, 8)
-# feistel = feistel(bloco, 8, chave[::-1])
-# print(feistel)
